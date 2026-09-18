@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; }
+        h1 { color: #2c3e50; }
+        form { margin-bottom: 20px; }
+        input { padding: 8px; margin-right: 8px; }
+        button { padding: 8px 16px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Student Management System</h1>
+
+    <form id="addForm">
+        <input type="text" id="name" placeholder="Student name" required>
+        <input type="text" id="course" placeholder="Course" required>
+        <button type="submit">Add Student</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Name</th><th>Course</th></tr>
+        </thead>
+        <tbody id="studentRows"></tbody>
+    </table>
+
+    <script>
+        async function loadStudents() {
+            const res = await fetch('/api/students');
+            const students = await res.json();
+            const rows = students.map(s =>
+                `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.course}</td></tr>`
+            ).join('');
+            document.getElementById('studentRows').innerHTML = rows;
+        }
+
+        document.getElementById('addForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const course = document.getElementById('course').value;
+            await fetch('/api/students', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, course })
+            });
+            document.getElementById('addForm').reset();
+            loadStudents();
+        });
+
+        loadStudents();
+    </script>
+</body>
+</html>
