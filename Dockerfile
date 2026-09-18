@@ -10,7 +10,7 @@ COPY src ./src
 RUN mvn -B clean package -DskipTests
 
 # ---------- Stage 2: Run the application on a lightweight JRE ----------
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Copy only the built jar from the build stage (keeps final image small)
